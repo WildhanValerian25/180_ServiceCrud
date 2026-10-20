@@ -44,3 +44,19 @@ app.get('/biodata/:id', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+// =============================================================
+// 3. POST - Menambahkan data biodata baru
+// =============================================================
+app.post('/biodata', async (req, res) => {
+    try {
+        const { nama, nim, kelas } = req.body;
+        const newBiodata = await pool.query(
+            'INSERT INTO biodata (nama, nim, kelas) VALUES ($1, $2, $3) RETURNING *',
+            [nama, nim, kelas]
+        );
+        res.status(201).json(newBiodata.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
