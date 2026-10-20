@@ -82,3 +82,22 @@ app.put('/biodata/:id', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+// =============================================================
+// 5. DELETE - Menghapus data biodata berdasarkan ID
+// =============================================================
+app.delete('/biodata/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleteBiodata = await pool.query('DELETE FROM biodata WHERE id = $1 RETURNING *', [id]);
+
+        if (deleteBiodata.rows.length === 0) {
+            return res.status(404).json({ message: "Data tidak ditemukan" });
+        }
+
+        res.json({ message: "Data berhasil dihapus!" });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
